@@ -1,10 +1,8 @@
-angular.module('helloWorldApp', [
-    'ngRoute'
-])
+angular.module('helloWorldApp', ['ngRoute'])
 
 
-.config(['$routeProvider',
-    function ($routeProvider) {
+.config(['$routeProvider','$locationProvider',
+    function ($routeProvider,$locationProvider) {
         $routeProvider.
         when('/', {
             templateUrl: 'views/home.html',
@@ -20,11 +18,6 @@ angular.module('helloWorldApp', [
         }).otherwise({
             redirectTo: '/accueil'
         });
-
-
-    }])
-
-.config(['$locationProvider', function($locationProvider) {
-    $locationProvider.html5Mode(true);
-    $locationProvider.hashPrefix('');
-}]);
+        // $locationProvider.html5Mode(true);
+        $locationProvider.hashPrefix('');
+    }]);
