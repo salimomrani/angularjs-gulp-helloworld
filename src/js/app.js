@@ -12,11 +12,11 @@ angular.module('helloWorldApp', ['ngRoute'])
             controller: 'LoginController'
         }).when('/500', {
             templateUrl: 'error500.html'
-        }).when('/accueils', {
+        }).when('/accueil', {
             templateUrl: 'views/desherence/accueil.html',
             controller: 'desherenceControllers'
         }).otherwise({
-            redirectTo: '/accueil'
+            redirectTo: '/accueils'
         });
 
         // $locationProvider.html5Mode(true);
