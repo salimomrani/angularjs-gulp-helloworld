@@ -18,6 +18,7 @@ angular.module('helloWorldApp', ['ngRoute'])
         }).otherwise({
             redirectTo: '/accueil'
         });
+
         // $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix('');
     }]);
