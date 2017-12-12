@@ -2,3 +2,5 @@ dist/
 node_modules/
 *.log
 Supprimerait .idea/
+/src/rev/
+Supprimerait src/rev/
