@@ -12,7 +12,7 @@ angular.module('helloWorldApp', ['ngRoute'])
             controller: 'LoginController'
         }).when('/500', {
             templateUrl: 'error500.html'
-        }).when('/accueil', {
+        }).when('/accueils', {
             templateUrl: 'views/desherence/accueil.html',
             controller: 'desherenceControllers'
         }).otherwise({

@@ -12,7 +12,8 @@ var rimraf          = require('rimraf');
 var revOutdated     = require('gulp-rev-outdated');
 var path            = require('path');
 var through         = require('through2');
-
+var revDel = require('rev-del');
+var revDel = require('gulp-rev-del-redundant');
 var runSequence = require('run-sequence');
 
 const scripts = require('./scripts');
@@ -23,45 +24,27 @@ const styles = require('./styles');
 var devMode = false;
 
 
-function cleaner() {
-    return through.obj(function(file, enc, cb){
-        rimraf( path.resolve( (file.cwd || process.cwd()), file.path), function (err) {
-            if (err) {
-                this.emit('error', new gutil.PluginError('Cleanup old files', err));
-            }
-            this.push(file);
-            cb();
-        }.bind(this));
-    });
-}
-
-gulp.task('clean', function() {
-    gulp.src( ['dist/**/*.*'], {read: false})
-        .pipe( revOutdated(1) ) // leave 1 latest asset file for every file name prefix.
-        .pipe( cleaner() );
-});
-
-
-
-gulp.task('css', ['clean'] , function() {
+gulp.task('css' , function() {
     gulp.src(styles)
         .pipe(concat('main.css'))
         .pipe(rev())
         .pipe(gulp.dest('dist/css'))
         .pipe(rev.manifest())
+        .pipe(revDel({ dest: 'dist/css' }))
         .pipe(gulp.dest('./src/rev/css'))
         .pipe(browserSync.reload({
             stream: true
         }));
 });
 
-gulp.task('js', ['clean'],function() {
+gulp.task('js',function() {
     gulp.src(scripts)
         .pipe(concat('scripts.js'))
         .pipe(rev())
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'))
         .pipe(rev.manifest())
+        .pipe(revDel({ dest: 'dist/js' }))
         .pipe(gulp.dest('./src/rev/js'))
         .pipe(browserSync.reload({
             stream: true
@@ -83,11 +66,8 @@ gulp.task('html', function() {
         }));
 });
 
-
-
 gulp.task('build', function(done) {
     runSequence(
-        ['clean'],
         ['css'],
         ['js'],
         ['html'],
