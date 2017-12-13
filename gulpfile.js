@@ -5,16 +5,11 @@ const uglify = require('gulp-uglify');
 var rev = require('gulp-rev');
 var rev_collect = require('gulp-rev-collector');
 const browserSync = require('browser-sync').create();
-var assetManifest = require('gulp-asset-manifest');
 
-var gutil           = require('gulp-util');
-var rimraf          = require('rimraf');
-var revOutdated     = require('gulp-rev-outdated');
-var path            = require('path');
-var through         = require('through2');
-var revDel = require('rev-del');
 var revDel = require('gulp-rev-del-redundant');
 var runSequence = require('run-sequence');
+var notify = require('gulp-notify');
+var del = require('del');
 
 const scripts = require('./scripts');
 const styles = require('./styles');
@@ -23,6 +18,13 @@ const styles = require('./styles');
 
 var devMode = false;
 
+
+// Clean output directory
+gulp.task('clean', del.bind(
+    null, ['.tmp', 'dist' + '*'], {
+        dot: true
+    }
+));
 
 gulp.task('css' , function() {
     gulp.src(styles)
@@ -51,8 +53,25 @@ gulp.task('js',function() {
         }));
 });
 
+
 gulp.task('html', function() {
-    return gulp.src(['./src/rev/**/*.json','./src/templates/**/*.html'])
+    return gulp.src(['./src/rev/**/*.json','./src/templates/**/**/*.html'])
+        .pipe( rev_collect({
+            replaceReved: true,
+            dirReplacements: {
+                'css': 'css',
+                'js': 'js'
+            }
+        }) )
+        .pipe(gulp.dest('./dist'))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
+});
+
+
+gulp.task('htmlheader', function() {
+    return gulp.src(['./src/rev/**/*.json','./src/templates/index.html'])
         .pipe( rev_collect({
             replaceReved: true,
             dirReplacements: {
@@ -85,8 +104,10 @@ gulp.task('browser-sync', function() {
 
 gulp.task('start',  function() {
     devMode = true;
+
     gulp.start(['build', 'browser-sync']);
     gulp.watch(['./src/css/**/*.css'], ['css']);
     gulp.watch(['./src/js/**/*.js'], ['js']);
-    gulp.watch(['./src/rev/**/*.*'], ['html']);
+    gulp.watch(['./src/rev/**/*.*'],['htmlheader']);
+    gulp.watch(['./src/templates/views/**/*.*'],['html']);
 });

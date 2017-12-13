@@ -1,6 +1,5 @@
 angular.module('helloWorldApp', ['ngRoute'])
 
-
 .config(['$routeProvider','$locationProvider',
     function ($routeProvider,$locationProvider) {
         $routeProvider.
@@ -16,7 +15,7 @@ angular.module('helloWorldApp', ['ngRoute'])
             templateUrl: 'views/desherence/accueil.html',
             controller: 'desherenceControllers'
         }).otherwise({
-            redirectTo: '/accueils'
+            redirectTo: '/accueil'
         });
 
         // $locationProvider.html5Mode(true);
